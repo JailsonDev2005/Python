@@ -12,22 +12,6 @@ class Bebidas(ABC):
         def prepara(self):
                 pass
         
-
-        # @abstractmethod
-        # def ferve_agua(self):
-        #         pass
-        
-
-        # @abstractmethod
-        # def misturar(self):
-        #         pass
-        
-
-        # @abstractmethod
-        # def servi(self):
-        #         pass
-        
-
 class Cafe(Bebidas):
 
         def prepara(self):
