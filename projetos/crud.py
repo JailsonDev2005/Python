@@ -60,6 +60,25 @@ def excluir_cadastro(i):
         print("[red]Erro ao remover[/]")
 
 
+def ler_inteiro(msg):
+    while True:
+        try:
+            return int(input(msg))
+        except ValueError:
+            print("[red]Digite apenas números[/]")
+
+
+def ler_indice(msg):
+    while True:
+        try:
+            i = int(input(msg)) - 1
+            if 0 <= i < len(Dados):
+                return i
+            print("[red]Índice fora da lista[/]")
+        except ValueError:
+            print("[red]Digite apenas números[/]")
+
+
 
 while True:
     conteudo = "Opções"
@@ -80,29 +99,26 @@ while True:
 
     if escolha == 1:
         nome = str(input("Digite seu Nome: ")).strip()
-        while True:
-            try:
-                idade = int(input("Digite sua Idade: "))
-                break
-            except ValueError:
-                print("[red]Digite apenas número[/]")
+        idade = ler_inteiro("Digite sua idade: ")
                 
         sexo = ''
         while sexo not in ["M", "F"]:
             sexo = str(input("Digite seu sexo[F|M]: ")).strip().upper()
-        numero = int(input("Digite seu Número: "))
+        numero = ler_inteiro("Digite seu número: ")
         criar_cadastro(nome, idade, sexo, numero)
     elif escolha == 2:
         lista_cadastro()
     elif escolha == 3:
-        indice = int(input("Digite o indice para altera: "))-1
+        indice = ler_indice("Digite o indice para alterar: ")
         nome_novo = str(input("Novo nome:")).strip()
-        idade_nova = int(input("Idade nova: "))
-        sexo_novo = str(input("Sexo novo: ")).strip().upper()
-        numero_novo = int(input("Número novo: "))
+        idade_nova = ler_inteiro("Idade novo: ")
+        sexo_novo = ''
+        while sexo_novo not in ["M", "F"]:
+            sexo_novo = input("Sexo novo: ").strip().upper()
+        numero_novo = ler_inteiro("novo número: ")
         atualizar_cadastro(indice, nome_novo, idade_nova, sexo_novo, numero_novo)
     elif escolha == 4:
-        indice = int(input("Qual indice deseja excluir: "))-1
+        indice = ler_indice("Qual indice deseja excluir: ")
         excluir_cadastro(indice)
     elif escolha == 5:
         print("Sistema Cadastro encerrado")
