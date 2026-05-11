@@ -9,6 +9,7 @@ Dados = []
 def criar_cadastro(nome, idade, sexo, numero):
     cadastro = {"nome":nome, "idade":idade, "sexo":sexo, "numero":numero}
     Dados.append(cadastro)
+
     print("[bold green]Cadastro realizado com sucesso![/]")
 
 
@@ -75,6 +76,7 @@ def ler_indice(msg):
             if 0 <= i < len(Dados):
                 return i
             print("[red]Índice fora da lista[/]")
+
         except ValueError:
             print("[red]Digite apenas números[/]")
 
@@ -106,9 +108,12 @@ while True:
             sexo = str(input("Digite seu sexo[F|M]: ")).strip().upper()
         numero = ler_inteiro("Digite seu número: ")
         criar_cadastro(nome, idade, sexo, numero)
+
     elif escolha == 2:
         lista_cadastro()
+
     elif escolha == 3:
+
         indice = ler_indice("Digite o indice para alterar: ")
         nome_novo = str(input("Novo nome:")).strip()
         idade_nova = ler_inteiro("Idade novo: ")
@@ -117,12 +122,17 @@ while True:
             sexo_novo = input("Sexo novo: ").strip().upper()
         numero_novo = ler_inteiro("novo número: ")
         atualizar_cadastro(indice, nome_novo, idade_nova, sexo_novo, numero_novo)
+
     elif escolha == 4:
+
         indice = ler_indice("Qual indice deseja excluir: ")
         excluir_cadastro(indice)
+
     elif escolha == 5:
+
         print("Sistema Cadastro encerrado")
         break
+    
     else:
         print("[red]Digite um Opção válida[/]")
     
