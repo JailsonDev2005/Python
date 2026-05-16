@@ -1,4 +1,6 @@
 from rich import print
+from rich.panel import Panel
+from rich.table import Table
 import sqlite3
 
 conn = sqlite3.connect("banco.db")
@@ -17,34 +19,89 @@ CREATE TABLE IF NOT EXISTS usuarios (
 conn.commit()
 
 
-dados = []
-
 def menu():
 
-    print("-"*30)
-    print("Cadastro")
-    print("1. Criar Cadastro")
-    print("2. Ler cadastro")
-    print("3. Atualizar cadastro")
-    print("4. Deletar cadastro")
-    print("5. Sair")
-    print("-"*30)
+    conteudo = "Cadastro"
+    conteudo += "\n1. Criar cadastro"
+    conteudo += "\n2. Ler cadastro"
+    conteudo += "\n3. Atualizar cadastro"
+    conteudo += "\n4. Deletar cadastro"
+    conteudo += "\n5. Sair"
+    menu = Panel(conteudo, title="Sistema Cadastro", width=28, expand=False)
+    print(menu)
 
 
-def criar_usuario():
-    pass
+
+def criar_usuario(nome, idade, email, senha):
+
+
+    cursor.execute(
+        "INSERT INTO usuarios (nome, idade, email, senha)    VALUES (?, ?, ?, ?)",
+        (nome, idade, email, senha)
+    )
+
+    conn.commit()
+
+    print("[green]Cadastro realizado com sucesso![/]")
 
 
 def listar_usuario():
-    pass
+    cursor.execute("SELECT * FROM usuarios")
+
+    usuarios = cursor.fetchall()
+
+    if not usuarios:
+        print("[yellow]Nenhum usuário cadastrado[/]")
+        return
+
+    table = Table(title="Lista de Usuários")
+    table.add_column("ID", style="cyan")
+    table.add_column("Nome", style="green")
+    table.add_column("Idade", style="yellow")
+    table.add_column("Email", style="magenta")
+
+    for usuario in usuarios:
+        table.add_row(
+            str(usuario[0]),
+            usuario[1],
+            str(usuario[2]),
+            usuario[3]
+        )
+
+    print(table)
 
 
-def atualisar_usuario():
-    pass
+def atualizar_usuario(id_usuario, nome, idade, email, senha,):
+    
+    cursor.execute("""
+        UPDATE usuarios
+        SET nome = ?, idade = ?, email = ?, senha = ?
+        WHERE id = ?
+    """, (nome, idade, email, senha, id_usuario))
+
+    conn.commit()
+
+    if cursor.rowcount == 0:
+        print("[red]Usuário não encontrado[/]")
+    else:
+        print("[green]Cadastro atualizado![/]")
 
 
-def deletar_usuario():
-    pass
+
+def deletar_usuario(id_usuario):
+
+    cursor.execute(
+        "DELETE FROM usuarios WHERE id = ?",
+        (id_usuario,)
+    )
+
+    conn.commit()
+
+
+    if cursor.rowcount == 0:
+        print("[red]Usuário não encontrado[/]")
+    else:
+        print("[green]Cadastro deletado![/]")
 
 
 def ler_inteiro(msg):
@@ -52,7 +109,7 @@ def ler_inteiro(msg):
         try:
             return int(input(msg))
         except ValueError:
-            print("Digite apenas números")
+            print("[red]Digite apenas números[/]")
 
 
 
@@ -66,78 +123,42 @@ while True:
 
 
     if escolha == 1:
-
         nome = str(input("Qual seu nome: "))
         idade = ler_inteiro("Qual sua idader: ")
         email = str(input("Qual seu email: "))
         senha = input("Qual sua senha: ")
-
-        cursor.execute(
-            "INSERT INTO usuarios (nome, idade, email, senha)    VALUES (?, ?, ?, ?)",
-            (nome, idade, email, senha)
-        )
-
-        conn.commit()
-
-        print("Cadastro realizado com sucesso!")
-
+        criar_usuario(nome, idade, email, senha)
 
     elif escolha == 2:
 
-        cursor.execute("SELECT * FROM usuarios")
-
-        usuarios = cursor.fetchall()
-
-        print("Lista de Usuários")
-
-        for usuario in usuarios:
-            print(f"ID: {usuario[0]}")
-            print(f"Nome: {usuario[1]}")
-            print(f"Idade: {usuario[2]}")
-            print(f"Email: {usuario[3]}")
-            print(f"Senha: {usuario[4]}")
-
+        listar_usuario()
 
     elif escolha == 3:
 
-        id_usuario = int(input("Digite o ID do usuário: "))
+        id_usuario = ler_inteiro("Digite o ID do usuário: ")
         novo_nome = str(input("Novo nome: "))
         nova_idade = ler_inteiro("Nova idade: ")
         novo_email = str(input("Novo email: "))
         novo_senha = input("Nova senha: ")
 
-        cursor.execute("""
-            UPDATE usuarios
-            SET nome = ?, idade = ?, email = ?, senha = ?
-            WHERE id = ?
-        """, (novo_nome, nova_idade, novo_email, novo_senha, id_usuario))
-
-        conn.commit()
-
-        print("Cadastro atualizado!")
-    
+        atualizar_usuario(id_usuario, novo_nome, nova_idade, novo_email, novo_senha)
 
     elif escolha == 4:
 
         id_usuario = ler_inteiro("Digite o ID para deletar: ")
 
-        cursor.execute(
-            "DELETE FROM usuarios WHERE id = ?",
-            (id_usuario,)
-        )
+        deletar_usuario(id_usuario)
 
-        conn.commit()
 
-        print("Cadastro deletado!")
 
 
     elif escolha == 5:
 
-        print("Saindo do sistema...")
+        print("[yellow]Saindo do sistema...[/]")
         break
 
     else:
 
-        print("Opção inválida!")
+        print("[red]Opção inválida![/]")
 
 conn.close()
