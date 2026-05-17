@@ -9,7 +9,7 @@ from typing import List, Optional
 app = FastAPI(title="API de Tarefas")
 
 #MODELO DE DADOS
-class tarefa(BaseModel):
+class Tarefa(BaseModel):
     id: Optional[int] = None
     titulo: str
     descricao: str
@@ -17,3 +17,17 @@ class tarefa(BaseModel):
 
 #BANCO EM MEMORIA
 db_tarefas = []
+
+#ROTA PARA LISTAR TODAS AS TAREFAS
+@app.get('/tarefas', response_model=List[Tarefa])
+async def listar_tarefas():
+    return db_tarefas
+
+#ROTA PARA CRIAR TAREFA
+@app.post('/tarefa', response_model=Tarefa, status_code=201)
+async def criar_tarefa(tarefa: Tarefa):
+    tarefa.id = len(db_tarefas) + 1
+    db_tarefas.append(tarefa)
+    return tarefa
+
+
