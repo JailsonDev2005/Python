@@ -1,9 +1,14 @@
+#IMPORT RICH PERMITE EXIBIR TEXTO COLORIDO E FORMATADO NO TERMINAL
 from rich import print
+#CRIA TABELAS BONITAS E ORGANIZADAS
 from rich.table import Table
+#USADO PARA MOSTRA CONTEUDO DENTRO DE CAIXAS
 from rich.panel import Panel
+
 
 #GUARDA OS DADOS DO USUARIO
 Dados = []
+
 
 #MOSTRA O MENU DE OPÇÕES NO TERMINAL
 def menu():
@@ -19,6 +24,7 @@ def menu():
 
     print(menu)
 
+
 #CRIA O CADASTRO DO USUARIO
 def criar_cadastro(nome, idade, sexo, numero):
 
@@ -27,7 +33,8 @@ def criar_cadastro(nome, idade, sexo, numero):
 
     print("[bold green]Cadastro realizado com sucesso![/]")
 
-#LISTA O USUARIO
+
+#LISTA OS USUARIO
 def lista_cadastro():
 
     if not Dados:
@@ -54,7 +61,7 @@ def lista_cadastro():
     print(tabela)
 
 
-#EDITA O CADASTRO DO USUARIO
+#EDITA OS CADASTROS DOS USUARIOS
 def atualizar_cadastro(i, nome, idade, sexo, numero):
 
     if 0 <= i < len(Dados):
@@ -71,7 +78,8 @@ def atualizar_cadastro(i, nome, idade, sexo, numero):
 
         print("[red]Atualização inválida[/]")
 
-#EXCLUI O CADASTRO DO USUARIO
+
+#EXCLUI OS CADASTROS DOS USUARIOS
 def excluir_cadastro(i):
 
     if 0 <= i < len(Dados):

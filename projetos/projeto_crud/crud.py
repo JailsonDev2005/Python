@@ -1,4 +1,6 @@
+#IMPORT DA FUNÇOES
 from defs import *
+
 
 while True:
     menu()
