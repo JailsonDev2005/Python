@@ -5,27 +5,31 @@ from rich.panel import Panel
 #TABELAS BONITAS E ORGANIZADAS
 from rich.table import Table
 #PERMITE USAR O BANCO DE DADOS SQLITE
-import sqlite3
+import mysql.connector
 
-import hashlib
+
 
 
 #CRIA UM BANCO DE DADOS
-conn = sqlite3.connect("banco.db")
+conn = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="Jair2026@",
+    database="banco"
+)
+
 cursor = conn.cursor()
 
-def hash_senha(senha):
-    return hashlib.sha256(senha.encode()).hexdigest()
 
 #CRIA TABELA NO BANCO USANOD O MÓDULO
 cursor.execute("""
 CREATE TABLE IF NOT EXISTS usuarios (
-               id INTEGER PRIMARY KEY AUTOINCREMENT,
-               nome TEXT NOT NULL,
-               idade INTEGER NOT NULL,
-               email TEXT NOT NULL,
-               senha TEXT NOT NULL
-               )
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    idade INT NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    senha VARCHAR(100) NOT NULL
+)
 """)
 
 
@@ -49,10 +53,9 @@ def menu():
 #INSERE UM USURÁRIO NA TABELA
 def criar_usuario(nome, idade, email, senha):
 
-    senha_hash = hash_senha(senha)
 
     cursor.execute(
-        "INSERT INTO usuarios (nome, idade, email, senha)    VALUES (?, ?, ?, ?)",
+        "INSERT INTO usuarios (nome, idade, email, senha)    VALUES (%s, %s, %s, %s)",
         (nome, idade, email, senha)
     )
 
@@ -90,12 +93,11 @@ def listar_usuario():
 #ATUALIZAR OS DADOS DE UM USUÁRIO JA EXISTENTE
 def atualizar_usuario(id_usuario, nome, idade, email, senha):
 
-    senha_hash = hash_senha(senha)
     
     cursor.execute("""
         UPDATE usuarios
-        SET nome = ?, idade = ?, email = ?, senha = ?
-        WHERE id = ?
+        SET nome = %s, idade = %s, email = %s, senha = %s
+        WHERE id = %s
     """, (nome, idade, email, senha, id_usuario))
 
     conn.commit()
@@ -110,7 +112,7 @@ def atualizar_usuario(id_usuario, nome, idade, email, senha):
 def deletar_usuario(id_usuario):
 
     cursor.execute(
-        "DELETE FROM usuarios WHERE id = ?",
+        "DELETE FROM usuarios WHERE id = %s",
         (id_usuario,)
     )
 
