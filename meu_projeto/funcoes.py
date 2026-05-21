@@ -1,11 +1,15 @@
 #MELHORA A SAIDA DO TERMINAL
 from rich import print
-#CAIXAS PAINÉIS ESTILIZADAS NO TERMINAL
+#CAIXAS PAINÉIS ESTILIZADAS NO TERMINALp
 from rich.panel import Panel
 #TABELAS BONITAS E ORGANIZADAS
 from rich.table import Table
-#PERMITE USAR O BANCO DE DADOS SQLITE
+#PERMITE USAR O BANCO DE DADOS MYSQL
 import mysql.connector
+#PARA VALIDAR FORMATOS COMO EMAIL   
+import re
+
+import bcrypt
 
 
 
@@ -27,7 +31,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     id INT AUTO_INCREMENT PRIMARY KEY,
     nome VARCHAR(100) NOT NULL,
     idade INT NOT NULL,
-    email VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL UNIQUE,
     senha VARCHAR(100) NOT NULL
 )
 """)
@@ -35,6 +39,27 @@ CREATE TABLE IF NOT EXISTS usuarios (
 
 #SALVA AS ALTERAÇOES NO BANCO DE DADOS
 conn.commit()
+
+
+#CRIPTOGRAFA A SENHA
+def criptografar_senha(senha):
+    senha_byte = senha.encode('utf-8')
+
+    salt = bcrypt.gensalt()
+
+    hash_senha = bcrypt.hashpw(senha_byte, salt)
+
+    return hash_senha.decode('utf-8')
+
+
+#VALIDA EMAIL GMAIL
+def validar_gmail(email):
+    padrao = r'^[a-zA-Z0-9._%+-]+@gmail\.com$'
+
+    if re.match(padrao, email):
+        return True
+    
+    return False
 
 
 #CRIA UM MENU NO TERMINAL
@@ -52,6 +77,12 @@ def menu():
 
 #INSERE UM USURÁRIO NA TABELA
 def criar_usuario(nome, idade, email, senha):
+
+    senha = criptografar_senha(senha)
+
+    if not validar_gmail(email):
+        print("[red]Digite um Gmail válido![/]")
+        return
 
 
     cursor.execute(
@@ -93,7 +124,12 @@ def listar_usuario():
 #ATUALIZAR OS DADOS DE UM USUÁRIO JA EXISTENTE
 def atualizar_usuario(id_usuario, nome, idade, email, senha):
 
-    
+    if not validar_gmail(email):
+        print("[red]Digite um Gmail válido![/]")
+        return
+
+    senha = criptografar_senha(senha)
+
     cursor.execute("""
         UPDATE usuarios
         SET nome = %s, idade = %s, email = %s, senha = %s
@@ -133,6 +169,7 @@ def ler_inteiro(msg):
             print("[red]Digite apenas números[/]")
 
 
-
+#FECHA A CONEXÃO COM O BANCO DE DADOS
 def fechar_conexao():
+    cursor.close()
     conn.close()
