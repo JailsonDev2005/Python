@@ -169,7 +169,7 @@ def ler_inteiro(msg):
         except ValueError:
             print("[red]Digite apenas números[/]")
 
-
+#LOGIN DO USUARIO
 def login_usuario(email, senha):
 
     cursor.execute(
@@ -192,7 +192,7 @@ def login_usuario(email, senha):
     )
 
     if senha_correta:
-        print(f"[green]Login realizado com sucesso! Bem-vindo {nome_usuario}[/][/]")
+        print(f"[green]Login realizado com sucesso! Bem-vindo {nome_usuario}[/]")
 
     else:
         print("[red]Senha incorreta![/]")
